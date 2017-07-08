@@ -116,40 +116,47 @@ $('a[data-scroll="true"]').click(function(e){
 
 gaia = {
     misc:{
-        navbar_menu_visible: 0
+        navbar_menu_visible: 0,
+        close_navbar: function (button) {
+            gaia.misc.navbar_menu_visible = 0;
+            $div = $("#bs-example-navbar-collapse-1");
+            $('html').removeClass('nav-open');
+            $('#bodyClick').remove();
+            setTimeout(function(){
+               button.removeClass('toggled');
+               $div.removeClass('in');
+               $div.attr("aria-expanded", "false");
+               button.attr("aria-expanded", "false");
+            }, 550);
+            gaia.checkScrollForTransparentNavbar();
+            console.log('navbar closed')
+        }
     },
     initRightMenu: function(){
 
          if(!navbar_initialized){
             $toggle = $('.navbar-toggle');
             $toggle.click(function (){
-
                 if(gaia.misc.navbar_menu_visible == 1) {
-                    $('html').removeClass('nav-open');
-                    gaia.misc.navbar_menu_visible = 0;
-                    $('#bodyClick').remove();
-                     setTimeout(function(){
-                        $toggle.removeClass('toggled');
-                     }, 550);
-
+                    gaia.misc.close_navbar($toggle);
                 } else {
+
+                    $('.navbar').removeClass('navbar-transparent');
+                    transparent = false;
+                    
                     setTimeout(function(){
                         $toggle.addClass('toggled');
+                        $toggle.removeClass('collapsed');
                     }, 580);
 
                     div = '<div id="bodyClick"></div>';
                     $(div).appendTo("body").click(function() {
-                        $('html').removeClass('nav-open');
-                        gaia.misc.navbar_menu_visible = 0;
-                        $('#bodyClick').remove();
-                         setTimeout(function(){
-                            $toggle.removeClass('toggled');
-                         }, 550);
+                        gaia.misc.close_navbar($toggle);
                     });
 
                     $('html').addClass('nav-open');
                     gaia.misc.navbar_menu_visible = 1;
-
+                    console.log('navbar opened')
                 }
             });
             navbar_initialized = true;
